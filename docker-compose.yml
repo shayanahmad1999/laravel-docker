@@ -29,6 +29,19 @@ services:
     depends_on:
       - db
 
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: my-laravel_app
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
+    restart: always
+    command: php artisan queue:work
+    depends_on:
+      - web
+
   db:
     image: mysql:8.0
     environment:

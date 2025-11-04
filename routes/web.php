@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MailController;
 use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Route;
@@ -54,3 +55,5 @@ Route::get('users', function () {
     $users = User::paginate(15);
     return view('users.index', compact('users'));
 });
+
+Route::get('send-mail', [MailController::class, 'index']);
