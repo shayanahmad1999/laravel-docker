@@ -49,3 +49,8 @@ Route::get('getUsers', function () {
         'data' => User::all(),
     ]);
 });
+
+Route::get('users', function () {
+    $users = User::paginate(15);
+    return view('users.index', compact('users'));
+});

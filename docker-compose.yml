@@ -17,6 +17,18 @@ services:
       - db
     restart: always
 
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: my-laravel_app
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
+    command: ['sh', '-c', 'while true; do php artisan schedule:run --verbose --no-interaction; sleep 60; done']
+    depends_on:
+      - db
+
   db:
     image: mysql:8.0
     environment:
