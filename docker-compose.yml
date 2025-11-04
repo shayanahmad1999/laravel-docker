@@ -1,64 +1,33 @@
-version: '3.8'
-
-# This section defines the individual containers (services)
 services:
-  # ----------------------------------
-  # 1. WEB SERVICE (Laravel/PHP/Apache)
-  # ----------------------------------
   web:
-    # Builds the image from the local Dockerfile in the current directory (context: .)
     build:
       context: .
       dockerfile: Dockerfile
-    # Assigns a user-friendly name to the image
     image: my-laravel-app
-    # Maps host port 8080 to container port 80 (where Apache is listening)
     ports:
       - "8080:80"
-    # Defines persistence and sharing between host and container
     volumes:
-      # Mounts the application source code from the host to the container's web root
       - .:/var/www/html
-      # Declares anonymous volumes for storage and cache directories. This ensures 
-      # files written by the container (e.g., logs, cache) are not overwritten
-      # by the host's volume mount above.
       - /var/www/html/storage
       - /var/www/html/bootstrap/cache
-      # Mounts a custom Apache config file to override the container's default site
       - ./.docker/apache/default.conf:/etc/apache2/sites-enabled/000-default.conf
-    # Sets the starting directory inside the container
     working_dir: /var/www/html
-    # Runs the web server process as the 'www-data' user for correct file permissions
     user: "www-data"
-    # Ensures the database container is started before this service
     depends_on:
       - db
-    # Automatically restart the container if it stops for any reason
     restart: always
 
-  # ----------------------------------
-  # 2. DATABASE SERVICE (MySQL)
-  # ----------------------------------
   db:
-    # Uses the official MySQL 8.0 image
     image: mysql:8.0
-    # Defines credentials and database names
     environment:
       MYSQL_ROOT_PASSWORD: ROOT
       MYSQL_DATABASE: laravel_app
       MYSQL_USER: laravel
       MYSQL_PASSWORD: secret
-    # Maps host port 3307 to container port 3306
     ports:
       - "3307:3306"
-    # Ensures database data is persisted across container restarts
     volumes:
       - dbdata:/var/lib/mysql
     restart: always
-
-# ----------------------------------
-# 3. VOLUMES DEFINITION
-# ----------------------------------
 volumes:
-  # Defines a named volume used by the 'db' service for persistent data storage
   dbdata:
