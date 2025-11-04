@@ -13,6 +13,16 @@ services:
       - ./.docker/apache/default.conf:/etc/apache2/sites-enabled/000-default.conf
     working_dir: /var/www/html
     user: "www-data"
+    environment:
+      - APP_ENV=production
+      - APP_KEY=base64:S6fzMBQDIndDfP62AvSWLCptFi6SNWeH6sSHHHob0Kk=
+      - APP_DEBUG=false
+      - DB_CONNECTION=pgsql
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_DATABASE=laravel_app
+      - DB_USERNAME=laravel
+      - DB_PASSWORD=secret
     depends_on:
       - db
     restart: always
@@ -42,17 +52,32 @@ services:
     depends_on:
       - web
 
+  # db:
+  #   image: mysql:8.0
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: ROOT
+  #     MYSQL_DATABASE: laravel_app
+  #     MYSQL_USER: laravel
+  #     MYSQL_PASSWORD: secret
+  #   ports:
+  #     - "3307:3306"
+  #   volumes:
+  #     - dbdata:/var/lib/mysql
+  #   restart: always
+
+# //---------- pgsql ----------//
   db:
-    image: mysql:8.0
+    image: postgres:17
     environment:
-      MYSQL_ROOT_PASSWORD: ROOT
-      MYSQL_DATABASE: laravel_app
-      MYSQL_USER: laravel
-      MYSQL_PASSWORD: secret
+      POSTGRES_DB: laravel_app
+      POSTGRES_USER: laravel
+      POSTGRES_PASSWORD: secret
     ports:
-      - "3307:3306"
+      - "5433:5433"
     volumes:
-      - dbdata:/var/lib/mysql
+      - dbdata:/var/lib/postgresql/data
     restart: always
+# //---------- pgsql ----------//
+
 volumes:
   dbdata:
