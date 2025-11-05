@@ -8,23 +8,19 @@ services:
       - "8080:80"
     volumes:
       - .:/var/www/html
-      - /var/www/html/storage
-      - /var/www/html/bootstrap/cache
       - ./.docker/apache/default.conf:/etc/apache2/sites-enabled/000-default.conf
     working_dir: /var/www/html
     user: "www-data"
-    
     environment:
       - APP_ENV=production
       - APP_KEY=base64:S6fzMBQDIndDfP62AvSWLCptFi6SNWeH6sSHHHob0Kk=
       - APP_DEBUG=false
       - DB_CONNECTION=mysql
       - DB_HOST=db
-      - DB_PORT=5432
+      - DB_PORT=3306
       - DB_DATABASE=laravel_app
       - DB_USERNAME=laravel
       - DB_PASSWORD=secret
-
     depends_on:
       - db
     restart: always
@@ -33,11 +29,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: my-laravel_app
+    image: my-laravel-app
     volumes:
       - .:/var/www/html
     working_dir: /var/www/html
-    command: ['sh', '-c', 'while true; do php artisan schedule:run --verbose --no-interaction; sleep 60; done']
+    command: [ "sh", "-c", "while true; do php artisan schedule:run --verbose --no-interaction; sleep 60; done" ]
     depends_on:
       - db
 
@@ -45,7 +41,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: my-laravel_app
+    image: my-laravel-app
     volumes:
       - .:/var/www/html
     working_dir: /var/www/html
@@ -54,20 +50,20 @@ services:
     depends_on:
       - web
 
-  # db:
-  image: mysql:8.0
-  environment:
-    MYSQL_ROOT_PASSWORD: ROOT
-    MYSQL_DATABASE: laravel_app
-    MYSQL_USER: laravel
-    MYSQL_PASSWORD: secret
-  ports:
-    - "3307:3306"
-  volumes:
-    - dbdata:/var/lib/mysql
-  restart: always
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel_app
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: secret
+    ports:
+      - "3307:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    restart: always
 
-# //---------- pgsql ----------//
+  # //---------- pgsql ----------//
   # db:
   #   image: postgres:17
   #   environment:
@@ -79,18 +75,19 @@ services:
   #   volumes:
   #     - dbdata:/var/lib/postgresql/data
   #   restart: always
-# //---------- pgsql ----------//
+  # //---------- pgsql ----------//
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     container_name: laravel-phpmyadmin
     restart: always
-      - '8081:80'
+    ports:
+      - "8081:80"
     environment:
-      - PMA_HOST: db
-      - PMA_USER: root
-      - PMA_PASSWORD: root
-    plateform: linux/amd64
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: root
+    platform: linux/amd64
     depends_on:
       - db
 
