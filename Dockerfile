@@ -12,8 +12,8 @@ RUN apt-get update && \
     && curl -sL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
     # Install PHP extensions
-    # && docker-php-ext-install zip pdo_mysql \
-    && docker-php-ext-install zip pdo pdo_pgsql \
+    && docker-php-ext-install zip pdo_mysql \
+    # && docker-php-ext-install zip pdo pdo_pgsql \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN a2enmod rewrite

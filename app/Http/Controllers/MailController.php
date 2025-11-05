@@ -18,5 +18,7 @@ class MailController extends Controller
         Mail::to('backenddeveloper573@gmail.com')->queue(new DemoMail($mailData));
 
         info('Email is Send Successfully.');
+
+        return redirect()->back()->with('success', 'Email is Send Successfully.');
     }
 }

@@ -15,6 +15,10 @@
     <div class="container">
         <h2>Hover Rows</h2>
         <p>The .table-hover class enables a hover state on table rows:</p>
+        @if (session()->has('success'))
+            <div class="alert alert-success">{{ session()->get('success') }}</div>
+        @endif
+        <a href="{{ url('send-mail') }}" class="btn btn-sm btn-success">Send Email</a>
         <table class="table table-hover">
             <thead>
                 <tr>
